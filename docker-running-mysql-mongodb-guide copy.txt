@@ -1,0 +1,44 @@
+Docker Commands
+
+
+docker run -d -p 27017:27017 --name example-mongo mongo:latest
+
+docker run -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=rootuser -e MONGO_INITDB_ROOT_PASSWORD=password --name mongodb --net microservice-network mongo;
+
+docker run -d -p 8081:8081 -e ME_CONFIG_MONGODB_ADMINUSERNAME=rootuser -e ME_CONFIG_MONGODB_ADMINPASSWORD=password -e ME_CONFIG_MONGODB_SERVER=mongodb --name mongo-express --net microservice-network mongo-express
+
+brew services start mongodb-community@6.0
+brew services stop mongodb-community@6.0
+
+docker run -it -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root --name mysql mysql:latest
+
+docker run -d -p 3306:3306 --name mysqldb -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=mydatabase mysql:latest
+   
+
+
+ docker exec -it mysqldb bash
+
+
+docker run -d -p 3307:3306 --name mysql-docker-container -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=employee_db -e MYSQL_USER=root -e MYSQL_PASSWORD=root mysql/mysql-server:latest
+
+sudo docker exec -it mysql-docker-container bash
+
+docker run -d -p 3307:3306 --name mysql-docker-container -e MYSQL_ROOT_PASSWORD=rootpass -e MYSQL_DATABASE=inventory_service_db -e MYSQL_USER=root -e MYSQL_PASSWORD=root mysql/mysql-server:latest
+
+
+To Create new Database with new user below steps need to follow:
+
+docker exec -it mysql-docker-container mysql -u root -p
+CREATE DATABASE new_database;
+CREATE USER 'new_user'@'%' IDENTIFIED BY 'new_user_password';
+GRANT ALL PRIVILEGES ON new_database.* TO 'new_user'@'%';
+FLUSH PRIVILEGES;
+Below Command are used to run the mysql container which can login as root user from anywhere:
+
+docker run -d -p 3307:3306 --name mysql-docker-container \
+-e MYSQL_ROOT_PASSWORD=password \
+-e MYSQL_DATABASE=inventory_service_db \
+-e MYSQL_USER=inventory \
+-e MYSQL_PASSWORD=password \
+-e MYSQL_ROOT_HOST='%' \
+mysql/mysql-server:latest
